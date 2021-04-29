@@ -1,4 +1,4 @@
-name: Create new release
+name: Create release candidates
 
 on:
   push:
@@ -19,9 +19,9 @@ jobs:
           node-version: '14'
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn install --frozen-lockfile --check-files
 
-      - name: Extract version from branch name
+      - name: Extract version from branch
         shell: bash
         run: echo "##[set-output name=version;]$(echo ${GITHUB_REF##*/})"
         id: extract_version
@@ -31,8 +31,8 @@ jobs:
 
       - name: Configure git credentials
         run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
+          git config user.name redwood-releases
+          git config user.email releases@redwoodjs.com
 
       - name: Commit and tag
         run: |
@@ -42,6 +42,22 @@ jobs:
 
       - name: Build
         run: yarn build
+
+      - name: Run ESLint
+        run: yarn lint
+        env:
+          CI: true
+
+      - name: Run tests
+        run: yarn test
+        env:
+          CI: true
+
+      - name: Configure NPM credentials
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}" > .npmrc
+        env:
+          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
 
       - name: Publish package
         run:
