@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
-    "@redwoodjs/api": "^v0.31.3",
-    "@redwoodjs/api-server": "^v0.31.3"
+    "@redwoodjs/api": "^v0.31.6",
+    "@redwoodjs/api-server": "^v0.31.6"
   }
 }

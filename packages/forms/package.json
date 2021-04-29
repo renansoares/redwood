@@ -1,6 +1,6 @@
 {
   "name": "@redwoodjs/forms",
-  "version": "0.31.3",
+  "version": "0.31.6",
   "files": [
     "dist",
     "src/index.d.ts"
