@@ -1,0 +1,47 @@
+name: Create new release
+
+on:
+  push:
+    branches: ['releases/**']
+
+jobs:
+  build:
+    if: github.repository == 'renansoares/redwood'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # Required because lerna uses tags to determine the version.
+
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Extract version from branch name
+        shell: bash
+        run: echo "##[set-output name=version;]$(echo ${GITHUB_REF##*/})"
+        id: extract_version
+
+      - name: Create package version
+        run: ./tasks/update-package-versions ${{ steps.extract_version.outputs.version }}
+
+      - name: Configure git credentials
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+
+      - name: Commit and tag
+        run: |
+          git commit -am "${{ steps.extract_version.outputs.version }}"
+          git tag ${{ steps.extract_version.outputs.version }}
+          git push && git push --tags
+
+      - name: Build
+        run: yarn build
+
+      - name: Publish package
+        run: yarn lerna publish from-package
