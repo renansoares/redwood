@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    if: github.repository == 'redwoodjs/redwood'
+    if: github.repository == 'renansoares/redwood'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -36,6 +36,7 @@ jobs:
 
       - name: Publish release candidate
         run: |
+          git fetch --depth=1 origin +refs/tags/*:refs/tags/*
           echo "//registry.npmjs.org/:_authToken=${NPM_AUTH_TOKEN}" > .npmrc
           ./tasks/publish-rc
         env:
