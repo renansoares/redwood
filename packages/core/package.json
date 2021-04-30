@@ -1,6 +1,6 @@
 {
   "name": "@redwoodjs/core",
-  "version": "0.31.0",
+  "version": "0.31.3",
   "license": "MIT",
   "files": [
     "config",
